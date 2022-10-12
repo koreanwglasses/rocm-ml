@@ -1,0 +1,26 @@
+#!/bin/bash
+set -e
+
+args=(
+    --ip=0.0.0.0
+    --no-browser
+    --allow-root
+)
+
+if [ ! -z "$TOKEN_FILE" ]; then
+    if [ ! -f "$TOKEN_FILE" ]; then
+        echo >&2 "Error: \$TOKEN_FILE is not a file"
+        exit 1
+    fi
+    TOKEN=$(<$TOKEN_FILE)
+fi
+
+if [ ! -z "$TOKEN" ]; then
+    if [[ ! "$TOKEN" =~ ^[0-9a-f]+$ ]]; then
+        echo >&2 "Error: Invalid token (must match /^[0-9a-f]+$/)"
+        exit 1
+    fi
+    args+=(--NotebookApp.token=$TOKEN)
+fi
+
+HSA_OVERRIDE_GFX_VERSION=10.3.0 jupyter notebook ${args[@]}

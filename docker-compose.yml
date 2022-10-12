@@ -1,0 +1,26 @@
+services:
+  rocm-pytorch:
+    build: .
+    ports:
+      - 8888:8888
+
+    working_dir: /data
+    volumes:
+      - ./../:/data
+
+    environment:
+      - TOKEN_FILE=/data/token
+
+    devices:
+      - /dev/kfd
+      - /dev/dri
+
+    user: ${CURRENT_UID}
+
+    cap_add:
+      - SYS_PTRACE
+
+    security_opt:
+      - seccomp=unconfined
+
+    # shm_size: 8G
